@@ -168,7 +168,3 @@ Feel free to submit issues and enhancement requests!
 3. Commit your changes
 4. Push to the branch
 5. Create a Pull Request
-
-## Security
-
-This application includes basic content moderation but should not be considered a complete security solution. Always review and enhance security measures based on your specific needs.

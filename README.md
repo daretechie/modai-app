@@ -15,6 +15,10 @@ A Python-based chat application that provides a safe and moderated interaction w
 - **RESTful API**: HTTP endpoints for integration with other applications
 - **Error Handling**: Robust error handling for API calls and content processing
 
+## Demo
+
+![ModAI App Demo](img/image.png)
+
 ## Prerequisites
 
 - Python 3.12+ (tested with Python 3.12.3)

@@ -2,15 +2,22 @@ import os
 from openai import OpenAI
 from dotenv import load_dotenv
 
+# Load environment variables from .env file (if it exists)
 load_dotenv()
 
 # --------------------------
 # CONFIGURATION
 # --------------------------
 
+hf_token = os.environ.get("HF_TOKEN")
+if not hf_token:
+    raise ValueError("HF_TOKEN environment variable is not set! Please set it in your .env file or environment.")
+
+print(f"✓ HF_TOKEN loaded successfully (length: {len(hf_token)})")
+
 client = OpenAI(
     base_url="https://router.huggingface.co/v1",
-    api_key=os.environ.get("HF_TOKEN")
+    api_key=hf_token
 )
 
 SYSTEM_PROMPT = "You are a helpful, polite, and safe AI assistant. Respond clearly and respectfully."
@@ -44,7 +51,12 @@ def query(user_message):
         )
         return completion.choices[0].message.content
     except Exception as e:
-        return f"⚠️ Error: {str(e)}"
+        error_msg = str(e)
+        print(f"❌ OpenAI API Error: {error_msg}")
+        # Include more detailed error information
+        if hasattr(e, 'response'):
+            print(f"Response status: {e.response.status_code if hasattr(e.response, 'status_code') else 'N/A'}")
+        return f"⚠️ Error: {error_msg}"
 
 # --------------------------
 # MAIN CHAT FUNCTION

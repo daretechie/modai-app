@@ -17,7 +17,7 @@ A Python-based chat application that provides a safe and moderated interaction w
 
 ## Prerequisites
 
-- Python 3.x
+- Python 3.12+ (tested with Python 3.12.3)
 - Hugging Face API token
 - Required Python packages:
   - `openai`
@@ -51,6 +51,14 @@ A Python-based chat application that provides a safe and moderated interaction w
    HF_TOKEN=your_huggingface_token_here
    ```
 
+## Installing Dependencies
+
+You can install all required dependencies using:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Usage
 
 ### Web Interface
@@ -80,6 +88,54 @@ A Python-based chat application that provides a safe and moderated interaction w
 2. Enter your messages when prompted with "You: "
 
 3. Type 'exit' or 'quit' to end the chat session
+
+### Docker Deployment
+
+The application can be deployed using Docker for easy containerization:
+
+1. Build the Docker image:
+   ```bash
+   docker build -t modai-app .
+   ```
+
+2. Run the container:
+   ```bash
+   docker run -d -p 5001:5001 -e HF_TOKEN=your_huggingface_token_here modai-app
+   ```
+
+3. Access the web interface at `http://localhost:5001`
+
+**Note**: Make sure to set the `HF_TOKEN` environment variable with your Hugging Face API token when running the container.
+
+**Important**: If using an `.env` file with `--env-file`, do NOT wrap the token value in quotes. The token should be:
+```
+HF_TOKEN=hf_your_actual_token_here
+```
+NOT:
+```
+HF_TOKEN="hf_your_actual_token_here"
+```
+
+#### Using Docker Compose (Recommended)
+
+For easier deployment and management, you can use Docker Compose:
+
+1. Build and start the container:
+   ```bash
+   docker-compose up -d
+   ```
+
+2. View logs:
+   ```bash
+   docker compose logs -f
+   ```
+
+3. Stop the container:
+   ```bash
+   docker compose down
+   ```
+
+The `docker-compose.yml` file automatically loads your `.env` file and handles port mapping.
 
 ### REST API
 
@@ -154,6 +210,28 @@ The application handles various error scenarios:
 - Invalid responses
 - Token authentication errors
 - Content moderation violations
+
+## Testing
+
+Automated tests are provided using [pytest](https://pytest.org/).
+
+- Test files are located in the `test/` directory.
+- To run all tests and see detailed output:
+  ```bash
+  pytest -v
+  ```
+- To run a specific test file:
+  ```bash
+  pytest -v test/test_app.py
+  ```
+- All tests should pass with output similar to:
+  ```
+  ============================= test session =============================
+  test/test_app.py::test_home PASSED
+  test/test_app.py::test_moderation_block PASSED
+  ========================== 2 passed in 0.XXs ==========================
+  ```
+- To add new tests, create additional files in the `test/` directory and follow the pytest function naming convention (`test_...`).
 
 ## License
 

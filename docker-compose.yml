@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
+    # Optional: Uncomment below for development with hot-reload
+    # volumes:
+    #   - .:/app
+    #   - /app/venv  # Preserve venv

@@ -18,3 +18,12 @@ README.md
 test/
 codealike.json
 .pytest_cache/
+# Infrastructure directories (empty or not needed in container)
+ansible/
+app/
+docs/
+github-actions/
+k8s/
+monitoring/
+terraform/
+img/

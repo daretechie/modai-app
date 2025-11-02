@@ -74,11 +74,10 @@ jobs:
         with:
           version: "v3.14.0"
 
-      - name: Set up Kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
-        # This secret (KUBE_CONFIG_DATA) needs to be created in the "development" environment settings in repo repo
+      - name: Set up KinD cluster
+        uses: helm/kind-action@v1.10.0
+        with:
+          cluster_name: dev-cluster
 
       - name: Deploy to Kubernetes
         run: |

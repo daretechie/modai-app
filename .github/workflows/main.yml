@@ -78,7 +78,7 @@ jobs:
         run: |
           mkdir -p ~/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
-        # This secret (KUBE_CONFIG_DATA) needs to be created in the "development" environment settings in your repo
+        # This secret (KUBE_CONFIG_DATA) needs to be created in the "development" environment settings in repo repo
 
       - name: Deploy to Kubernetes
         run: |
@@ -107,7 +107,7 @@ jobs:
         run: |
           mkdir -p ~/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
-        # This secret (KUBE_CONFIG_DATA) needs to be created in the "staging" environment settings in your repo
+        # This secret (KUBE_CONFIG_DATA) needs to be created in the "staging" environment settings in the repo
 
       - name: Deploy to Kubernetes
         run: |

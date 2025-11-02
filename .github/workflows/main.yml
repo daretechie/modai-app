@@ -1,0 +1,146 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - version-2
+
+env:
+  DOCKER_IMAGE_NAME: modai-app
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.get_sha.outputs.sha }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get short git SHA
+        id: get_sha
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Dependency Vulnerability Scan (Safety)
+        run: |
+          pip install safety
+          safety check -r requirements.txt || true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.get_sha.outputs.sha }} .
+
+      - name: Image Vulnerability Scan (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.get_sha.outputs.sha }}"
+          format: "table"
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.get_sha.outputs.sha }}
+
+  deploy-to-development:
+    needs: build-and-scan
+    if: github.ref == 'refs/heads/version-2'
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: "v3.14.0"
+
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
+        # This secret (KUBE_CONFIG_DATA) needs to be created in the "development" environment settings in your repo
+
+      - name: Deploy to Kubernetes
+        run: |
+          helm upgrade --install dev-release helm/ \
+            --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }} \
+            --set image.tag=${{ needs.build-and-scan.outputs.image_tag }} \
+            --namespace development --create-namespace
+
+  deploy-to-staging:
+    needs: build-and-scan
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      # url: # You can add the URL to your staging app here
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: "v3.14.0"
+
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
+        # This secret (KUBE_CONFIG_DATA) needs to be created in the "staging" environment settings in your repo
+
+      - name: Deploy to Kubernetes
+        run: |
+          helm upgrade --install stage-release helm/ \
+            --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }} \
+            --set image.tag=${{ needs.build-and-scan.outputs.image_tag }} \
+            --namespace staging --create-namespace
+
+  deploy-to-production:
+    needs: build-and-scan
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      # url: # You can add the URL to your production app here
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: "v3.14.0"
+
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
+        # This secret (KUBE_CONFIG_DATA) needs to be created in the "production" environment settings in your repo
+
+      - name: Deploy to Kubernetes
+        run: |
+          helm upgrade --install prod-release helm/ \
+            --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }} \
+            --set image.tag=${{ needs.build-and-scan.outputs.image_tag }} \
+            --namespace production --create-namespace

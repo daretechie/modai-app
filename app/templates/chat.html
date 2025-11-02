@@ -1,21 +1,49 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Modai</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='styles.css') }}"
-    />
-  </head>
-  <body>
-    <h1>🤖 Modai</h1>
-    <div class="chat-container">
-      <div id="chat-messages"></div>
-      <div>
-        <input type="text" id="user-input" placeholder="Type your message..." />
-        <button onclick="sendMessage()">Send</button>
-      </div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModAI - AI-Powered Chat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234f46e5'><path d='M12 2L1 12h3v9h6v-6h4v6h6v-9h3L12 2z'/></svg>">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🤖 ModAI</h1>
+            <p>Your AI-powered chat assistant with built-in content moderation</p>
+        </header>
+        
+        <main class="chat-container">
+            <div id="chat-messages">
+                <div class="ai-message">
+                    Hello! I'm your AI assistant. How can I help you today?
+                    <div class="message-time">Just now</div>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <input 
+                    type="text" 
+                    id="user-input" 
+                    placeholder="Type your message here..." 
+                    autocomplete="off"
+                    onkeypress="if(event.key === 'Enter') sendMessage()"
+                >
+                <button id="send-button" onclick="sendMessage()">
+                    <span>Send</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </main>
     </div>
+
     <script src="{{ url_for('static', filename='chat.js') }}"></script>
-  </body>
+</body>
 </html>

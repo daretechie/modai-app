@@ -28,8 +28,6 @@ A Python-based chat application that provides a safe and moderated interaction w
 
 ## Prerequisites
 
-
-
 - Python 3.12+
 
 - Docker and Docker Compose
@@ -42,19 +40,11 @@ A Python-based chat application that provides a safe and moderated interaction w
 
 - Hugging Face API token
 
-
-
 ## Setup (Local Development)
-
-
 
 This section guides you through setting up and running the application locally using Docker Compose.
 
-
-
 1.  **Clone the repository:**
-
-
 
     ```bash
 
@@ -64,11 +54,7 @@ This section guides you through setting up and running the application locally u
 
     ```
 
-
-
 2.  **Create a virtual environment and install dependencies (optional, for CLI usage/development):**
-
-
 
     ```bash
 
@@ -80,13 +66,9 @@ This section guides you through setting up and running the application locally u
 
     ```
 
-
-
 3.  **Create a `.env` file:**
 
     Create a file named `.env` in the project root and add your Hugging Face API token:
-
-
 
     ```
 
@@ -96,13 +78,9 @@ This section guides you through setting up and running the application locally u
 
     **Important**: Do NOT wrap the token value in quotes.
 
-
-
 4.  **Run with Docker Compose:**
 
     Build and start the container. The `docker-compose.yml` file automatically loads your `.env` file and handles port mapping.
-
-
 
     ```bash
 
@@ -110,13 +88,9 @@ This section guides you through setting up and running the application locally u
 
     ```
 
-
-
 5.  **Access the web interface:**
 
     Open your browser and navigate to:
-
-
 
     ```
 
@@ -124,31 +98,17 @@ This section guides you through setting up and running the application locally u
 
     ```
 
-
-
 ## Usage
-
-
 
 ### Web Interface
 
-
-
 Access the web interface at `http://localhost:5001` after running with Docker Compose. Use the chat interface to interact with the AI.
-
-
 
 ### Command Line Interface
 
-
-
 If you've set up the virtual environment (Step 2 in Local Development), you can run the CLI chat application:
 
-
-
 1.  **Start the CLI:**
-
-
 
     ```bash
 
@@ -156,33 +116,21 @@ If you've set up the virtual environment (Step 2 in Local Development), you can 
 
     ```
 
-
-
 2.  Enter your messages when prompted with "You: "
 
 3.  Type 'exit' or 'quit' to end the chat session.
 
-
-
 ## Deployment to Kubernetes (Minikube)
 
-
-
 This section guides you through deploying the application to a local Kubernetes cluster using Minikube and Helm.
-
-
 
 1.  **Prerequisites:**
 
     Ensure you have `minikube`, `helm`, and `kubectl` installed.
 
-
-
 2.  **Start Minikube:**
 
     If your Minikube cluster is not running or is in a bad state, delete and restart it:
-
-
 
     ```bash
 
@@ -192,13 +140,9 @@ This section guides you through deploying the application to a local Kubernetes 
 
     ```
 
-
-
 3.  **Configure Docker environment for Minikube:**
 
     This makes `minikube`'s Docker daemon available to your terminal, so images you build are directly accessible by `minikube`. Run this in every new terminal session:
-
-
 
     ```bash
 
@@ -206,13 +150,9 @@ This section guides you through deploying the application to a local Kubernetes 
 
     ```
 
-
-
 4.  **Build Docker image for Minikube:**
 
     Build your application's Docker image. It will be built directly inside `minikube`.
-
-
 
     ```bash
 
@@ -220,13 +160,9 @@ This section guides you through deploying the application to a local Kubernetes 
 
     ```
 
-
-
 5.  **Load Docker image into Minikube (Alternative to `eval $(minikube docker-env)`):**
 
     If you prefer not to use `eval $(minikube docker-env)`, you can build your image normally and then load it into Minikube:
-
-
 
     ```bash
 
@@ -236,13 +172,9 @@ This section guides you through deploying the application to a local Kubernetes 
 
     ```
 
-
-
 6.  **Create HF_TOKEN Secret:**
 
     Your application requires the `HF_TOKEN`. Store it securely in a Kubernetes Secret:
-
-
 
     ```bash
 
@@ -252,33 +184,27 @@ This section guides you through deploying the application to a local Kubernetes 
 
     **Important:** Replace `your_huggingface_token_here` with your actual token.
 
-
-
 7.  **Install or Upgrade Helm chart:**
 
-    *   **First-time installation:**
+    - **First-time installation:**
 
-        ```bash
+      ```bash
 
-        helm install my-release helm/
+      helm install my-release helm/
 
-        ```
+      ```
 
-    *   **Upgrading an existing installation:**
+    - **Upgrading an existing installation:**
 
-        ```bash
+      ```bash
 
-        helm upgrade my-release helm/
+      helm upgrade my-release helm/
 
-        ```
-
-
+      ```
 
 8.  **Access the service:**
 
-    To access your application, run `minikube tunnel` in a *separate terminal* and leave it running. Then, in your original terminal, get the service URL:
-
-
+    To access your application, run `minikube tunnel` in a _separate terminal_ and leave it running. Then, in your original terminal, get the service URL:
 
     ```bash
 
@@ -288,15 +214,9 @@ This section guides you through deploying the application to a local Kubernetes 
 
     This will open the application in your default browser.
 
-
-
 ## REST API
 
-
-
 The application provides a REST API endpoint for integration:
-
-
 
 ```bash
 
@@ -314,43 +234,25 @@ Content-Type: application/json
 
 ```
 
-
-
 Response format:
 
-
-
 ```json
-
 {
-
   "response": "AI response here",
 
   "warning": "Content was moderated" // Optional, present if content was moderated
-
 }
-
 ```
-
-
 
 ## Content Moderation
 
-
-
 The application implements two-way content moderation:
 
-
-
 1.  **Input Moderation**:
-
-
 
     - Checks user input for banned keywords
 
     - Blocks potentially harmful requests before they reach the AI
-
-
 
 2.  **Output Moderation**:
 
@@ -360,13 +262,9 @@ The application implements two-way content moderation:
 
     - Provides warning messages for moderated content
 
-
-
 ## Project Structure
 
-
-
-```
+````
 
 modai-app/
 
@@ -455,7 +353,8 @@ Automated tests are provided using [pytest](https://pytest.org/).
 - To run all tests and see detailed output:
   ```bash
   pytest -v
-  ```
+````
+
 - To run a specific test file:
   ```bash
   pytest -v test/test_app.py

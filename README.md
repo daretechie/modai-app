@@ -395,3 +395,6 @@ minikube image ls | grep modai-app
 ```
 
 This makes the image available to your Minikube cluster without needing to push to an external registry.
+
+kubectl config view --flatten --minify | base64 -w 0 > "k8sconfig.txt"
+This command exports the current Kubernetes context configuration, flattens it to remove any unnecessary information, and encodes it in base64 format. The output is saved to a file named "k8sconfig.txt". This file can be used for various purposes, such as sharing the configuration securely or using it in automated scripts.

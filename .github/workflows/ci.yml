@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main
+      # - main
       - version-2 # Assuming you're working on this branch for now
 
 env:
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install Python dependencies
         run: pip install -r requirements.txt
@@ -45,17 +45,17 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
-          format: 'table'
-          exit-code: '1' # Fail if any vulnerability is found
-          severity: 'CRITICAL,HIGH'
+          format: "table"
+          exit-code: "1" # Fail if any vulnerability is found
+          severity: "CRITICAL,HIGH"
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
 
       - name: Install Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v3
         with:
-          version: 'v3.14.0'
+          version: "v3.14.0"
 
       - name: Helm Chart Lint
         run: helm lint helm/

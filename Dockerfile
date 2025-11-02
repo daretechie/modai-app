@@ -23,7 +23,7 @@ RUN useradd -m -u 1000 appuser
 COPY --from=builder /opt/venv /opt/venv
 
 # Copy the application code
-COPY . .
+COPY app/ app/
 
 # Set ownership of the application files
 RUN chown -R appuser:appuser /app
